@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ayo Belajar Barisan dan Deret v5</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800&display=swap">
+<style>
+:root{--bg1:#f6f3ff;--bg2:#eaf4ff;--card:#fff;--ink:#2a2f4a;--mut:#6b7392;--pri:#6d5efc;--pri2:#a99cff;--ok:#1fa35a;--okbg:#e5f8ec;--bad:#e5484d;--badbg:#ffecee;--line:#e2e5f5;--sel:#ffe98a;--sh:0 8px 22px rgba(80,70,180,.10);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;color:var(--ink);font-family:'Nunito','Trebuchet MS','Comic Sans MS',system-ui,sans-serif;font-weight:700;line-height:1.55}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:14px;padding:10px 16px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);box-shadow:0 4px 14px rgba(80,70,180,.07)}
+.hearts{display:flex;gap:2px;white-space:nowrap}
+.hr{font-size:1.55rem;display:inline-block;line-height:1}
+.hr.pop{animation:pop .55s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.7) rotate(-14deg)}100%{transform:scale(1)}}
+.timer{padding:4px 11px;border-radius:99px;background:#efedff;color:var(--pri);font-size:.95rem;font-weight:800;white-space:nowrap}
+.timer.low{background:var(--badbg);color:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+@media (max-width:480px){#dice span{display:none}.top{gap:10px;padding:10px 12px}}
+.pbar{flex:1;min-width:24px;height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--pri),var(--pri2));transition:width .45s}
+#dice{padding:8px 14px;border:0;border-radius:14px;background:var(--pri);color:#fff;font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}
+main{max-width:680px;margin:0 auto;padding:18px 16px 28px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+h1{font-family:'Baloo 2','Trebuchet MS',sans-serif;font-size:1.45rem;line-height:1.2;margin:0}
+.cnt{font-size:.85rem;color:var(--mut);white-space:nowrap}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}
+.q{font-size:1.08rem;border-color:#d4cfff;background:linear-gradient(180deg,#fff,#faf9ff)}
+.tag{display:inline-block;margin-bottom:8px;padding:2px 12px;border-radius:99px;background:#efedff;color:var(--pri);font-size:.78rem;font-weight:800}
+.step{transition:opacity .3s,border-color .3s,box-shadow .3s}
+.step h3{display:flex;align-items:center;gap:10px;margin:0 0 8px;font-family:'Baloo 2','Trebuchet MS',sans-serif;font-size:1.08rem;color:var(--ink)}
+.no{flex:none;width:30px;height:30px;border-radius:50%;background:var(--pri2);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.95rem}
+.step.active{border-color:var(--pri);box-shadow:0 0 0 5px rgba(109,94,252,.12),var(--sh)}
+.step.active .no{background:var(--pri)}
+.step.done{border-color:#bfe8cd}
+.step.done .no{background:var(--ok);font-size:0}
+.step.done .no::before{content:'\2713';font-size:1rem}
+.step.locked{opacity:.45;pointer-events:none}
+.note{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+.eq{font-size:1.22rem;line-height:2.6;overflow-x:auto;padding:4px 2px}
+.slot{min-width:56px;height:40px;margin:0 3px;padding:0 9px;border:2px dashed var(--pri);border-radius:13px;background:#f8f7ff;color:var(--mut);font:inherit;font-weight:800;cursor:pointer;transition:transform .15s}
+.eq sup .slot{font-size:.7em;min-width:38px;height:30px}
+.slot.sel{background:var(--sel);border-style:solid;color:var(--ink);transform:translateY(-2px)}
+.slot.ok{border:2px solid var(--ok);background:var(--okbg);color:var(--ok);cursor:default}
+.slot.bad{border:2px solid var(--bad);background:var(--badbg);color:var(--bad);animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.ln{line-height:2.8}
+.ln.hid{display:none}
+.tk{font-weight:800}
+.tk.e{color:var(--mut);opacity:.55}
+mark{background:transparent;color:inherit}
+.ln.src mark{background:var(--sel);border-radius:9px;padding:3px 6px}
+.tray{display:none;margin-top:12px;padding:12px;border-radius:16px;background:#f7f8ff}
+.step.active .tray{display:block}
+.tray h4{margin:0 0 8px;font-size:.8rem;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{min-width:54px;height:44px;padding:0 14px;border:2px solid var(--line);border-radius:22px;background:#fff;color:var(--ink);font:inherit;font-weight:800;cursor:pointer;box-shadow:0 2px 0 var(--line);transition:transform .1s}
+.chip:active{transform:translateY(2px);box-shadow:none}
+.chip.res{border-color:var(--ok);color:var(--ok);background:var(--okbg);box-shadow:0 2px 0 #bfe8cd}
+#msg{position:sticky;bottom:10px;padding:11px 16px;border-radius:16px;background:var(--card);border:2px solid var(--line);box-shadow:var(--sh);font-size:.93rem}
+#msg.ok{border-color:var(--ok);background:var(--okbg)}
+#msg.bad{border-color:var(--bad);background:var(--badbg)}
+#win{text-align:center;border-color:var(--ok);background:var(--okbg);font-size:1.15rem}
+#win button,#next{margin-top:10px;padding:10px 20px;border:0;border-radius:14px;background:var(--pri);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+#over{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(35,32,70,.55)}
+#over[hidden]{display:none}
+#over .box{max-width:340px;padding:26px 22px;border-radius:26px;background:#fff;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+#over .big{font-size:3rem;line-height:1}
+#over h2{margin:6px 0;font-family:'Baloo 2','Trebuchet MS',sans-serif}
+#over p{margin:0;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="top"><div class="hearts" id="hearts"></div><div class="timer" id="timer">⏱️ 5:00</div><div class="pbar"><i id="bar"></i></div><button id="dice">🎲<span> Soal lain</span></button></div>
+<main>
+<div class="hd"><h1>Ayo Belajar Barisan &amp; Deret ✨</h1><div class="cnt">✅ Selesai: <b id="cnt">0</b></div></div>
+<div class="card q"><span class="tag" id="tag"></span><div id="q"></div></div>
+<div id="steps"></div>
+<div class="card" id="win" hidden><b id="wt"></b><br><button id="again">🎲 Soal lain</button></div>
+<div id="msg"></div>
+</main>
+<div id="over" hidden><div class="box"><div class="big" id="ob">💔</div><h2 id="oh">Hati kamu habis!</h2><p id="op">Tenang, belajar itu proses. Yuk coba soal yang lain.</p><button id="next">Coba soal baru</button></div></div>
+<script>
+var $=function(s){return document.querySelector(s)};
+function eq(a,b){return Math.abs(a-b)<1e-9}
+function R(x){return Math.round(x*1e6)/1e6}
+function F(v){return String(R(v)).replace('.',',').replace('-','&minus;')}
+var NAME={AU:'Barisan Aritmetika',AS:'Deret Aritmetika',GU:'Barisan Geometri',GS:'Deret Geometri',GT:'Deret Geometri Tak Hingga'};
+var BANK=[
+['AU','Diketahui barisan aritmetika: <b>3, 10, 17, 24, 31, ...</b> Tentukan suku ke-48 (U<sub>48</sub>) barisan tersebut!',[3,10,17,24],3,7,48],
+['AU','Sebuah teater menyusun kursi bertingkat. Baris pertama 12 kursi, baris kedua 16 kursi, baris ketiga 20 kursi, dan seterusnya bertambah tetap. Berapa kursi pada baris ke-15?',[12,16,20,24],12,4,15],
+['AU','Dina menabung tiap minggu: minggu pertama Rp20.000, kedua Rp25.000, ketiga Rp30.000, dan seterusnya. Berapa tabungannya di minggu ke-12? (dalam ribuan rupiah)',[20,25,30,35],20,5,12],
+['AU','Diketahui barisan aritmetika: <b>90, 85, 80, 75, ...</b> Tentukan suku ke-15 (U<sub>15</sub>)!',[90,85,80,75],90,-5,15],
+['AS','Tentukan jumlah 20 suku pertama dari deret <b>2 + 5 + 8 + 11 + ...</b>',[2,5,8,11],2,3,20],
+['AS','Diketahui deret aritmetika <b>5 + 9 + 13 + 17 + ...</b> Tentukan jumlah 10 suku pertamanya (S<sub>10</sub>)!',[5,9,13,17],5,4,10],
+['AS','Rani menabung Rp10.000 di minggu pertama, Rp15.000 di minggu kedua, Rp20.000 di minggu ketiga, dan seterusnya. Berapa total tabungannya selama 12 minggu? (dalam ribuan rupiah)',[10,15,20,25],10,5,12],
+['AS','Tentukan S<sub>16</sub> dari deret <b>4 + 7 + 10 + 13 + ...</b>',[4,7,10,13],4,3,16],
+['GU','Diketahui barisan geometri: <b>2, 6, 18, 54, ...</b> Tentukan suku ke-8 (U<sub>8</sub>)!',[2,6,18,54],2,3,8],
+['GU','Bakteri membelah diri sehingga jumlahnya dua kali lipat tiap jam. Jam pertama ada 5 bakteri, jam kedua 10, jam ketiga 20, dan seterusnya. Berapa bakteri pada jam ke-9?',[5,10,20,40],5,2,9],
+['GU','Diketahui barisan geometri: <b>3, 12, 48, 192, ...</b> Tentukan suku ke-5 (U<sub>5</sub>)!',[3,12,48,192],3,4,5],
+['GU','Sebuah tanaman merambat tumbuh dengan pola: hari pertama 7 cm, hari kedua 14 cm, hari ketiga 28 cm, hari keempat 56 cm, dan seterusnya. Berapa tingginya pada hari ke-7?',[7,14,28,56],7,2,7],
+['GS','Tentukan jumlah 8 suku pertama dari deret <b>2 + 4 + 8 + 16 + ...</b>',[2,4,8,16],2,2,8],
+['GS','Tentukan S<sub>5</sub> dari deret geometri <b>3 + 9 + 27 + 81 + ...</b>',[3,9,27,81],3,3,5],
+['GS','Tentukan S<sub>6</sub> dari deret geometri <b>1 + 3 + 9 + 27 + ...</b>',[1,3,9,27],1,3,6],
+['GS','Pesan berantai disebarkan: hari pertama diterima 5 orang, hari kedua 10 orang, hari ketiga 20 orang, dan seterusnya. Berapa total penerima pesan selama 6 hari?',[5,10,20,40],5,2,6],
+['GT','Tentukan jumlah tak hingga dari deret <b>8 + 4 + 2 + 1 + ...</b>',[8,4,2,1],8,0.5,0],
+['GT','Tentukan jumlah tak hingga dari deret <b>100 + 20 + 4 + 0,8 + ...</b>',[100,20,4,0.8],100,0.2,0],
+['GT','Tentukan jumlah tak hingga dari deret <b>12 + 6 + 3 + 1,5 + ...</b>',[12,6,3,1.5],12,0.5,0],
+['GT','Tentukan jumlah tak hingga dari deret <b>900 + 90 + 9 + 0,9 + ...</b>',[900,90,9,0.9],900,0.1,0]
+];
+var S,st,sel,saved,cur=-1,final,hearts=3,seen=[],doneN=0,tEnd=0,tInt=null,LIMIT=300;
+function W(x){return x<0?'('+F(x)+')':F(x)}
+function build(P){
+ var ty=P[0],q=P[2],a=P[3],d=P[4],n=P[5],ar=ty[0]==='A',nm=ar?'b':'r',N=F(n),p=n-1,m,t,t2,T,h,dd,qq,U,s3,s4;
+ var s1={t:'Langkah 1: Tentukan suku pertama (a)',tpl:'a = _',ans:[a],h:'Suku pertama adalah angka paling awal pada soal.',save:[['a',a]],ex:q.concat([n])};
+ var s2={t:'Langkah 2: Tentukan '+(ar?'beda (b)':'rasio (r)'),note:ar?'Beda = suku di depan dikurangi suku sebelumnya.':'Rasio = suku di depan dibagi suku sebelumnya.',tpl:nm+' = _ '+(ar?'&minus;':'&divide;')+' _ = _',ans:[q[1],q[0],d],h:'Pilih dua suku yang berurutan (yang di depan dulu), lalu hitung hasilnya.',save:[[nm,d]],ex:q.concat([d]),
+ c:function(i,v,x){var j;if(i===0)return q.findIndex(function(w){return eq(w,v)})>0;if(i===1){if(x[0]===null)return false;j=q.findIndex(function(w){return eq(w,x[0])});return j>0&&eq(q[j-1],v)}return eq(v,d)}};
+ var H='Hitung bagian yang disorot kuning.',M='&minus;',X='&times;',D='&divide;',
+ NT='Angka pada rumus terisi otomatis dari Langkah 3. Kerjakan berurutan: kurung dulu, lalu pangkat, kali/bagi, terakhir tambah/kurang. Bagian yang disorot kuning dihitung, hasilnya masuk ke kotak di baris berikutnya.',s4t='Langkah 4: Hitung ';
+ if(ty==='AU'){m=R(p*d);U=R(a+m);final=U;
+  s3={t:'Langkah 3: Masukkan ke rumus',note:'Rumus: U<sub>n</sub> = a + (n &minus; 1) &times; b',tpl:'U<sub>'+N+'</sub> = _ + ( _ &minus; 1) &times; _',ans:[a,n,d],h:'Urutannya: a, lalu n (suku ke berapa), lalu b.'};
+  s4={t:s4t+'U<sub>'+N+'</sub>',note:NT,h:H,ans:[p,m,U],lines:['U<sub>'+N+'</sub> = {0} + (<mark>{1} '+M+' 1</mark>) '+X+' {2}','= {0} + <mark>(_) '+X+' {2}</mark>','= <mark>{0} + '+(m<0?'(_)':'_')+'</mark>','= _']};
+ }else if(ty==='AS'){m=R(p*d);t2=2*a;T=R(t2+m);h=n/2;final=R(h*T);
+  s3={t:'Langkah 3: Masukkan ke rumus',note:'Rumus: S<sub>n</sub> = n &divide; 2 &times; ( 2a + (n &minus; 1) &times; b )',tpl:'S<sub>'+N+'</sub> = _ &divide; 2 &times; ( 2 &times; _ + ( _ &minus; 1) &times; _ )',ans:[n,a,n,d],h:'Urutannya: n, a, n, lalu b.'};
+  s4={t:s4t+'S<sub>'+N+'</sub>',note:NT,h:H,ans:[p,m,t2,T,h,final],lines:['S<sub>'+N+'</sub> = {0} '+D+' 2 '+X+' (2 '+X+' {1} + (<mark>{2} '+M+' 1</mark>) '+X+' {3})','= {0} '+D+' 2 '+X+' (2 '+X+' {1} + <mark>(_) '+X+' {3}</mark>)','= {0} '+D+' 2 '+X+' (<mark>2 '+X+' {1}</mark> + '+(m<0?'(_)':'_')+')','= {0} '+D+' 2 '+X+' (<mark>_ + '+W(m)+'</mark>)','= <mark>{0} '+D+' 2</mark> '+X+' (_)','= <mark>_ '+X+' ('+F(T)+')</mark>','= _']};
+ }else if(ty==='GU'){m=R(Math.pow(d,p));U=R(a*m);final=U;
+  s3={t:'Langkah 3: Masukkan ke rumus',note:'Rumus: U<sub>n</sub> = a &times; r<sup>(n &minus; 1)</sup>',tpl:'U<sub>'+N+'</sub> = _ &times; _<sup>( _ &minus; 1)</sup>',ans:[a,d,n],h:'Urutannya: a, r, lalu n.'};
+  s4={t:s4t+'U<sub>'+N+'</sub>',note:NT,h:H,ans:[p,m,U],lines:['U<sub>'+N+'</sub> = {0} '+X+' {1}<sup>(<mark>{2} '+M+' 1</mark>)</sup>','= {0} '+X+' <mark>{1}<sup>_</sup></mark>','= <mark>{0} '+X+' _</mark>','= _']};
+ }else if(ty==='GS'){m=R(Math.pow(d,n));t=R(m-1);dd=R(d-1);qq=R(a*t);final=R(qq/dd);
+  s3={t:'Langkah 3: Masukkan ke rumus',note:'Rumus: S<sub>n</sub> = a &times; (r<sup>n</sup> &minus; 1) &divide; (r &minus; 1)',tpl:'S<sub>'+N+'</sub> = _ &times; ( _<sup>_</sup> &minus; 1) &divide; ( _ &minus; 1)',ans:[a,d,n,d],h:'Urutannya: a, r, n, lalu r lagi.'};
+  s4={t:s4t+'S<sub>'+N+'</sub>',note:NT,h:H,ans:[m,t,dd,qq,final],lines:['S<sub>'+N+'</sub> = {0} '+X+' (<mark>{1}<sup>{2}</sup></mark> '+M+' 1) '+D+' ({3} '+M+' 1)','= {0} '+X+' (<mark>_ '+M+' 1</mark>) '+D+' ({3} '+M+' 1)','= {0} '+X+' (_) '+D+' (<mark>{3} '+M+' 1</mark>)','= <mark>{0} '+X+' ('+F(t)+')</mark> '+D+' (_)','= <mark>_ '+D+' ('+F(dd)+')</mark>','= _']};
+ }else{dd=R(1-d);final=R(a/dd);
+  s3={t:'Langkah 3: Masukkan ke rumus',note:'Rumus: S<sub>&infin;</sub> = a &divide; (1 &minus; r), berlaku jika &minus;1 &lt; r &lt; 1',tpl:'S<sub>&infin;</sub> = _ &divide; ( 1 &minus; _ )',ans:[a,d],h:'Urutannya: a, lalu r.'};
+  s4={t:'Langkah 4: Hitung jumlah tak hingga',note:NT,h:H,ans:[dd,final],lines:['S<sub>&infin;</sub> = {0} '+D+' (<mark>1 '+M+' {1}</mark>)','= <mark>{0} '+D+' (_)</mark>','= _']};
+ }
+ return [s1,s2,s3,s4];
+}
+function uniq(arr){var o=[];arr.forEach(function(v){if(!o.some(function(w){return eq(w,v)}))o.push(v)});return o}
+function mk(s){var p=uniq(s.ans.concat(s.ex||[])),b=p.slice(),k=0,g=0,c,v,o;
+ while(k<3&&g++<40){v=p[Math.floor(Math.random()*p.length)];o=[1,-1,2,-2,10,-10][Math.floor(Math.random()*6)];c=R(v+o);if(!b.some(function(w){return eq(w,c)})){b.push(c);k++}}
+ s.pool=b.sort(function(x,y){return x-y})}
+function upd(){document.querySelectorAll('.tk').forEach(function(t){var v=st[2].v[+t.dataset.k];t.innerHTML=v===null?'&#9634;':W(v);t.classList.toggle('e',v===null)});var e=document.querySelectorAll('.step')[3];if(!e)return;var f=st[3].v.filter(function(v){return v!==null}).length;e.querySelectorAll('.ln').forEach(function(l,k){l.classList.toggle('hid',k>f+1);l.classList.toggle('src',k===f&&f<st[3].v.length)})}
+function chipHtml(v,l,c){return '<button class="chip '+(c||'')+'" data-v="'+v+'">'+(l||F(v))+'</button>'}
+function msg(t,c){var m=$('#msg');m.innerHTML=t;m.className=c||''}
+function active(){return st.findIndex(function(x){return !x.done})}
+function slotEl(si,i){return document.querySelector('.slot[data-s="'+si+'"][data-i="'+i+'"]')}
+function mark(){document.querySelectorAll('.slot.sel').forEach(function(e){e.classList.remove('sel')});if(sel)slotEl(sel.si,sel.i).classList.add('sel')}
+function refresh(){var a=active();$('#bar').style.width=(st.filter(function(x){return x.done}).length*25)+'%';document.querySelectorAll('.step').forEach(function(d,i){
+ d.classList.toggle('locked',a>=0&&i>a);d.classList.toggle('active',i===a);
+ if(i===a)d.querySelector('.chips').innerHTML=saved.map(function(p){return chipHtml(p[1],p[0]+' = '+F(p[1]),'res')}).join('')+S[i].pool.map(function(v){return chipHtml(v)}).join('');
+})}
+function init(k){
+ cur=k;var P=BANK[k];S=build(P);S.forEach(mk);saved=[];sel=null;
+ st=S.map(function(s){return{v:s.ans.map(function(){return null}),done:false}});
+ $('#tag').textContent=NAME[P[0]]+' · Soal ke-'+(k+1);
+ $('#q').innerHTML=P[1];$('#steps').innerHTML='';hearts=3;renderHearts();$('#over').hidden=true;startTimer();if(seen.indexOf(k)<0)seen.push(k);
+ S.forEach(function(s,si){
+  var i=0,body,parts;
+  if(s.lines){body=s.lines.map(function(l,k){return '<div class="ln">'+(k?l.replace('_','<button class="slot" data-s="'+si+'" data-i="'+(k-1)+'">?</button>'):l).replace(/\{(\d)\}/g,'<span class="tk e" data-k="$1">&#9634;</span>')+'</div>'}).join('')}
+  else{parts=s.tpl.split('_');body=parts.map(function(p,j){return p+(j<parts.length-1?'<button class="slot" data-s="'+si+'" data-i="'+(i++)+'">?</button>':'')}).join('')}
+  var d=document.createElement('section');d.className='card step';
+  d.innerHTML='<h3><span class="no">'+(si+1)+'</span><span>'+s.t.replace(/^Langkah \d: /,'')+'</span></h3>'+(s.note?'<p class="note">'+s.note+'</p>':'')+'<div class="eq">'+body+'</div><div class="tray"><h4>Pilih angka untuk kotak yang dipilih:</h4><div class="chips"></div></div>';
+  $('#steps').appendChild(d);
+ });
+ upd();$('#win').hidden=true;msg('Klik kotak kosong, lalu klik angka yang menurutmu tepat.');refresh();
+}
+function tfmt(l){return Math.floor(l/60)+':'+('0'+(l%60)).slice(-2)}
+function stopTimer(){if(tInt){clearInterval(tInt);tInt=null}}
+function tick(){var l=Math.max(0,Math.ceil((tEnd-Date.now())/1000));$('#timer').textContent='⏱️ '+tfmt(l);$('#timer').classList.toggle('low',l<=60);if(l<=0)timeUp()}
+function startTimer(){stopTimer();tEnd=Date.now()+LIMIT*1000;tick();tInt=setInterval(tick,500)}
+function over(kind){var t=kind==='time';$('#ob').textContent=t?'⏰':'💔';$('#oh').textContent=t?'Waktu habis!':'Hati kamu habis!';$('#op').textContent=t?'Tenang, coba lagi dengan soal yang lain ya.':'Tenang, belajar itu proses. Yuk coba soal yang lain.';$('#over').hidden=false}
+function timeUp(){stopTimer();hearts=0;renderHearts(-1);sel=null;msg('Waktu habis ⏰','bad');setTimeout(function(){over('time')},400)}
+function pick(){var c=[],i;for(i=0;i<BANK.length;i++)if(seen.indexOf(i)<0&&i!==cur)c.push(i);
+ if(!c.length){seen=cur>=0?[cur]:[];for(i=0;i<BANK.length;i++)if(i!==cur)c.push(i)}
+ return c[Math.floor(Math.random()*c.length)]}
+function other(){init(pick());window.scrollTo(0,0)}
+function renderHearts(l){$('#hearts').innerHTML=[0,1,2].map(function(i){return '<span class="hr'+(i<hearts?'':' x')+(i===l?' pop':'')+'">'+(i<hearts?'❤️':'🤍')+'</span>'}).join('')}
+function put(v){
+ if(hearts<=0)return;
+ if(!sel){msg('Klik dulu kotak kosong yang ingin diisi.','bad');return}
+ var si=sel.si,i=sel.i,s=S[si],x=st[si].v,el=slotEl(si,i);
+ var ok=s.c?s.c(i,v,x):eq(v,s.ans[i]);
+ if(ok){
+  x[i]=v;el.innerHTML=F(v);el.className='slot ok';upd();
+  var nx=x.indexOf(null);
+  if(nx>=0){sel={si:si,i:nx};mark();msg('Benar! Lanjut isi kotak berikutnya.','ok')}
+  else{
+   sel=null;st[si].done=true;mark();document.querySelectorAll('.step')[si].classList.add('done');
+   (s.save||[]).forEach(function(p){saved.push(p)});
+   if(active()<0){stopTimer();doneN++;$('#cnt').textContent=doneN;$('#wt').innerHTML='Hebat! Jawabannya adalah '+F(final)+' 🎉';$('#win').hidden=false;msg('Semua langkah selesai. Kerja bagus!','ok')}
+   else msg('Langkah selesai! Lanjut ke langkah berikutnya.','ok');
+   refresh();var a=active();if(a>=0)document.querySelectorAll('.step')[a].scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+ }else{
+  el.classList.add('bad');setTimeout(function(){el.classList.remove('bad')},600);hearts--;renderHearts(hearts);
+  if(hearts<=0){stopTimer();msg('Yah, hati habis 💔','bad');setTimeout(function(){over('heart')},500)}
+  else msg('Belum tepat, hatimu berkurang satu. '+s.h,'bad');
+ }
+}
+document.addEventListener('click',function(e){
+ var sl=e.target.closest('.slot');
+ if(sl){var si=+sl.dataset.s,i=+sl.dataset.i;if(si!==active()||st[si].v[i]!==null)return;sel={si:si,i:i};mark();return}
+ var ch=e.target.closest('.chip');if(ch){put(+ch.dataset.v);return}
+ if(e.target.closest('#dice')||e.target.closest('#again')||e.target.closest('#next'))other();
+});
+init(pick());
+</script>
+</body>
+</html>
